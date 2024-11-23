@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나가.</title>
+</head>
+<body>
+    <div class="getout">나가 임마!!!!!!!!!!!!!!!!!!!!!!!!!!!!</div>
+    <div class="button-container">
+        <button class="sorry" onclick="handlesorry()">잘못을 뉘우치고 축하해주러 가기</button>
+        <button class="nah" onclick="handlenah()">죽음을 무릅쓰고 절대 축하 안해주기</button>
+    </div>
+    <script>
+        function handlesorry() {
+            window.location.href = 'yes.html';  // 이동할 페이지의 URL을 입력합니다.
+        }
+
+        function handlenah() {
+            window.location.href = 'nah.html';  // 이동할 페이지의 URL을 입력합니다.
+        }
+    </script>
+</body>
+<style>
+    .getout{
+        font-size: 50vw;
+        color: red;
+    }
+    .button-container{
+        margin-bottom: 100px;
+    }
+</style>
+</html>

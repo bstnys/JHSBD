@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>조현서 갤러리</title>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDUjjAdKMVS2Z3Q05baucoKR6iweX6ZzTU",
+      authDomain: "jhsbd-a0569.firebaseapp.com",
+      projectId: "jhsbd-a0569",
+      storageBucket: "jhsbd-a0569.appspot.com",
+      messagingSenderId: "817799693923",
+      appId: "1:817799693923:web:63a1e73a45deabeeb59a56",
+      measurementId: "G-JJ87L5KZQ8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const analytics = getAnalytics(app);
+
+    // 글 작성 함수
+    window.submitPost = async function() {
+      const postContent = document.getElementById('postContent').value;
+
+      if (postContent.trim() === '') {
+        alert('글을 작성해주세요.');
+        return;
+      }
+
+      try {
+        const docRef = await addDoc(collection(db, "posts"), {
+          content: postContent,
+          timestamp: new Date(),
+          likes: 0,
+          dislikes: 0
+        });
+        console.log("Document written with ID: ", docRef.id);
+        loadPosts(); // 글 작성 후 목록 갱신
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }
+
+    // 게시글 목록 로드 함수
+    async function loadPosts() {
+      const postsList = document.getElementById('postsList');
+      postsList.innerHTML = ''; // 이전 목록을 초기화
+
+      const querySnapshot = await getDocs(collection(db, "posts"));
+      querySnapshot.forEach((doc) => {
+        const post = doc.data();
+        const postElement = document.createElement('div');
+        postElement.classList.add('post');
+        postElement.innerHTML = `
+          <p><strong>익명</strong> ${post.content}</p>
+          <button onclick="deletePost('${doc.id}')">삭제</button>
+          <button onclick="likePost('${doc.id}')">추천 (${post.likes})</button>
+          <button onclick="dislikePost('${doc.id}')">비추천 (${post.dislikes})</button>
+        `;
+        postsList.appendChild(postElement);
+      });
+    }
+
+    // 관리자 비밀번호 설정 (Firestore에서 확인)
+    const adminPassword = "hamsterisfood"; // 관리자 비밀번호 예시
+
+    // 글 삭제 함수
+    window.deletePost = async function(postId) {
+      // 관리자 비밀번호 입력 받기
+      
+      const password = prompt("삭제를 위해 관리자 비밀번호를 입력하세요:");
+
+      if (password === null || password === '') {
+        alert("비밀번호를 입력해야 삭제할 수 있습니다.");
+        return;
+      }
+
+      // 비밀번호가 관리자 비밀번호와 일치하는지 확인
+      if (password !== adminPassword) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+
+      try {
+        // 게시글 삭제
+        const postRef = doc(db, "posts", postId);
+        await deleteDoc(postRef);
+        console.log("Document deleted with ID: ", postId);
+        loadPosts(); // 삭제 후 목록 갱신
+      } catch (e) {
+        console.error("Error deleting document: ", e);
+      }
+    }
+
+    // 추천 함수
+    window.likePost = async function(postId) {
+      const postRef = doc(db, "posts", postId);
+      const postSnapshot = await getDoc(postRef);
+      const post = postSnapshot.data();
+
+      try {
+        await updateDoc(postRef, {
+          likes: post.likes + 1
+        });
+        console.log("Document liked with ID: ", postId);
+        loadPosts(); // 추천 후 목록 갱신
+      } catch (e) {
+        console.error("Error updating document: ", e);
+      }
+    }
+
+    // 비추천 함수
+    window.dislikePost = async function(postId) {
+      const postRef = doc(db, "posts", postId);
+      const postSnapshot = await getDoc(postRef);
+      const post = postSnapshot.data();
+
+      try {
+        await updateDoc(postRef, {
+          dislikes: post.dislikes + 1
+        });
+        console.log("Document disliked with ID: ", postId);
+        loadPosts(); // 비추천 후 목록 갱신
+      } catch (e) {
+        console.error("Error updating document: ", e);
+      }
+    }
+
+    // 페이지 로드 시 게시글 목록 자동 로드
+    window.onload = loadPosts;
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>갤주에게 글 쓰기</h1>
+  <textarea id="postContent" placeholder="글을 작성해주세요..."></textarea>
+  <div class="submit">
+    <button onclick="submitPost()">작성</button>
+  <button onclick="back()">돌아가기</button>
+</div>
+
+  <h2>게시글 목록</h2>
+  <div id="postsList"></div> <!-- 글 목록을 표시할 공간 -->
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1124</title>
+</head>
+<body>
+    <div class="title">오늘은 조향소(조현서)의 생일! 모두 축하해주러 와주셔서 감사합니다!</div>
+    <div class="button-container">
+        <button class="cong-button" onclick="handlecong()">축하의 한마디 전하러가기</button>
+    </div>
+        <div class="title2">이번에도 어김없이 많은 분들이 조향소(조현서)님의 생일을 축하해주셨습니다.</div>
+    <div class="list">
+        <img class="img2" src="img/norch.png" alt="">
+        <img class="img3" src="img/maz.png" alt="">
+        <img class="img4" src="img/banama.png" alt="">
+        <img class="img5" src="img/300.png" alt="">
+        <img class="img1" src="img/yg.png" alt="">
+</div>
+
+    <script>
+        function handlecong(){  
+            window.location.href = 'message.html';
+        }
+    </script>
+</body>
+<style>
+    *{
+    margin: 50;
+    padding: 50;
+    text-decoration: none;
+    list-style-type: none;
+}
+    .title{
+        margin-top: 20px;
+        text-align: center;
+        font-size: 3vw;
+    }.cong-button{
+        margin-top: 20px;
+        margin-left: 50%;
+    }
+    .title2{
+        margin-top: 40px;
+        text-align: center;
+        font-size: 2vw;
+    }
+    .list{
+        margin-top: 50px;
+    }
+    .img1{
+        width: 300px;
+    }
+    .img3{
+        width: 700px;
+    }
+</style>
+</html>
